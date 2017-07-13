@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>demom</title>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="500"></canvas>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+	<script>
+		var tabledata = {
+			"table_heads":["月份","类型","金额","地点"],
+			"table_columns":["month","type","value"],
+			"data":[
+					{
+						"month": "1",
+						"type": "餐饮",
+						"value": 200,
+						"address":"上海"
+					},
+					{
+						"month": "2",
+						"type": "餐饮餐饮餐饮餐饮餐饮餐饮餐饮餐饮餐饮餐饮餐",
+						"value": 200,
+						"address":"上海"
+					},
+					{
+						"month": "20",
+						"type": "餐饮",
+						"value": 200,
+						"address":"上海"
+					},
+					{
+						"month": "3",
+						"type": "餐饮",
+						"value": 20000000001111100000000000000000000.01,
+						"address":"上海"
+					},
+					{
+						"month": "3",
+						"type": "餐饮",
+						"value": 20000000001111100000000000000000000.01,
+						"address":"上海"
+					}
+				]
+		}
+	    var canvas=document.getElementById("canvas");
+	    var ctx=canvas.getContext("2d");
+	    var h = 25;
+	    var row = 0;
+	    var beginX=0;
+		var beginY=0;
+		var w = Math.floor(605/tabledata["table_heads"].length)
+	    function drawTable(){
+	    	//显示表名
+	    	ctx.font = "bold 16px Helvetica"
+	    	var text = ctx.measureText("这是一个表格主标题");
+	        ctx.fillText("这是一个表格主标题",(600-text.width)/2,20);
+	        ctx.font = "bold 11px Helvetica"
+	        var text = ctx.measureText("单位：$");
+	        ctx.fillText("单位：$",(600-text.width)/2,40);
+	    	//画表头
+	    	row =1;
+	    	for(var i=0;i<tabledata["table_heads"].length;i++){
+	    		beginY = h+25;
+	    		beginX = i*w;
+	    		var text = ctx.measureText(tabledata["table_heads"][i]);
+	        	_x=beginX+(w-text.width)/2;
+	        	_y=beginY+((h-11)/2+11);
+	    		ctx.fillStyle = "#fde06b"
+	    		ctx.fillRect(beginX-2,beginY,w,h)
+	    		ctx.fillStyle = "#000"
+	    		ctx.font = "bold 11px Helvetica"
+	    		ctx.fillText(tabledata["table_heads"][i],_x,_y);
+	    		ctx.rect(beginX-2,beginY,w,h);
+	    	}
+	    	//画表身
+	    	row =2;
+	    	var n = 0;
+	    	for(row;row<tabledata["data"].length+2;row++){
+	    		var toolong = false;
+	    		//判断行内是否有超长文字
+	    		for(ll in tabledata["data"][row-2]){
+		    		var text = ctx.measureText(tabledata["data"][row-2][ll]);
+		    		if(text.width>=w){
+		    			toolong = true;
+		    			//判断换几行
+		    			n=Math.ceil(text.width/w)
+		    		}
+	    		}
+	    		var sign = 0;
+	    		if(row==2){
+	    			beginY = beginY+25;
+	    		}else{
+		    		beginY = beginY+h;
+	    		}
+    			if(toolong){
+    				h = 25*n;
+    			}else{
+    				h=25;
+    			}
+	    		for(ll in tabledata["data"][row-2]){
+		    		beginX = sign*w;
+		    		ctx.fillStyle = "#fff"
+		    		ctx.fillRect(beginX-2,beginY,w,h)
+		        	if(row%2==1){
+		        		ctx.fillStyle = "#f5f5f5"
+			    		ctx.fillRect(beginX-2,beginY,w,h)
+		        	}
+		    		ctx.rect(beginX-2,beginY,w,h);
+		    		ctx.fillStyle = "#000"
+		    		var text = ctx.measureText(tabledata["data"][row-2][ll]);
+		    		//是否换行显示文字
+		    		ctx.font = "normal 11px Helvetica"
+		    		if(text.width>=w){
+		    			n = h/25;
+		    			for(var j=0;j<n;j++){
+		    				_x=beginX+(w-text.width/n)/2;
+				        	_y=beginY+((h-11)/2)*(j+1);
+				        	var part="";
+				        	for(var z =0 ;z<Math.ceil(tabledata["data"][row-2][ll].length/n);z++){
+				        		part += tabledata["data"][row-2][ll][z];
+				        	}
+				        	ctx.fillText(part,_x,_y);
+		    			}
+		    		}
+		    		else{
+		    			_x=beginX+(w-text.width)/2;
+			        	_y=beginY+((h-11)/2+11);
+			    		ctx.fillText(tabledata["data"][row-2][ll],_x,_y);
+		    		}
+	    			sign++;
+	    		}
+	    	}
+	    	//画ing
+	    	ctx.strokeStyle = "#c1c1c1";
+	    	ctx.lineWidth=0.2;
+	    	ctx.stroke();
+	    }
+	    drawTable()
+	</script>
+</body>
+</html>
